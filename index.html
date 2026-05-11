@@ -29,6 +29,25 @@ body {
   font-weight: 200;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  cursor: none;
+}
+*, *::before, *::after { cursor: none !important; }
+#custom-cursor {
+  position: fixed;
+  width: 13px;
+  height: 13px;
+  border: 0.5px solid #111;
+  background: white;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  will-change: left, top;
+  mix-blend-mode: normal;
+}
+#custom-cursor.is-hover {
+  background: #111;
+  transform: translate(-50%, -50%) scale(0.9);
 }
 
 /* ── NAV ── */
@@ -631,16 +650,22 @@ footer p {
 
 /* ── LIGHTBOX ── */
 #lightbox {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.92);
+  background: #fff;
   z-index: 800;
   align-items: center;
   justify-content: center;
-  cursor: zoom-out;
+  cursor: default;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
 }
-#lightbox.active { display: flex; }
+#lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
+}
 #lightbox img {
   max-width: 90vw;
   max-height: 90vh;
@@ -648,8 +673,14 @@ footer p {
   height: auto;
   object-fit: contain;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
-.wd-full img, .wd-col img { cursor: zoom-in; }
+#lightbox.active img {
+  opacity: 1;
+  transition: opacity 0.5s ease 0.3s;
+}
+.wd-full img, .wd-col img, .g-img { cursor: default; }
 
 /* ── UTILS ── */
 .hidden { display: none !important; }
@@ -693,6 +724,7 @@ footer p {
 </style>
 </head>
 <body>
+<div id="custom-cursor"></div>
 
 <!-- ── NAVIGATION ── -->
 <nav>
@@ -1287,20 +1319,25 @@ function showProject(id) {
   const gallery = document.getElementById('gallery-content');
   gallery.innerHTML = '';
 
+  const gi = (src) => {
+    const s = src.replace(/'/g, "\\'");
+    return `<img src="${src}" class="g-img" loading="lazy" alt="" onclick="openLightbox('${s}')">`;
+  };
+
   const heroes = heroImages[id] || [];
   if (heroes.length === 1) {
-    gallery.innerHTML += `<div class="g-full-wrap"><img src="${p.folder}/${heroes[0]}" class="g-img" loading="lazy" alt=""></div>`;
+    gallery.innerHTML += `<div class="g-full-wrap">${gi(`${p.folder}/${heroes[0]}`)}</div>`;
   } else if (heroes.length === 2) {
-    gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-2col-inner"><div class="g-col"><img src="${p.folder}/${heroes[0]}" class="g-img" loading="lazy" alt=""></div><div class="g-col"><img src="${p.folder}/${heroes[1]}" class="g-img" loading="lazy" alt=""></div></div></div>`;
+    gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-2col-inner"><div class="g-col">${gi(`${p.folder}/${heroes[0]}`)}</div><div class="g-col">${gi(`${p.folder}/${heroes[1]}`)}</div></div></div>`;
   } else if (heroes.length >= 3) {
-    gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-3col-inner"><div class="g-col"><img src="${p.folder}/${heroes[0]}" class="g-img" loading="lazy" alt=""></div><div class="g-col"><img src="${p.folder}/${heroes[1]}" class="g-img" loading="lazy" alt=""></div><div class="g-col"><img src="${p.folder}/${heroes[2]}" class="g-img" loading="lazy" alt=""></div></div></div>`;
+    gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-3col-inner"><div class="g-col">${gi(`${p.folder}/${heroes[0]}`)}</div><div class="g-col">${gi(`${p.folder}/${heroes[1]}`)}</div><div class="g-col">${gi(`${p.folder}/${heroes[2]}`)}</div></div></div>`;
   }
 
   p.layout.forEach(item => {
     if (item.type === 'full') {
-      gallery.innerHTML += `<div class="g-full-wrap"><img src="${p.folder}/${item.file}" class="g-img" loading="lazy" alt=""></div>`;
+      gallery.innerHTML += `<div class="g-full-wrap">${gi(`${p.folder}/${item.file}`)}</div>`;
     } else if (item.type === '2col') {
-      gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-2col-inner"><div class="g-col"><img src="${p.folder}/${item.files[0]}" class="g-img" loading="lazy" alt=""></div><div class="g-col"><img src="${p.folder}/${item.files[1]}" class="g-img" loading="lazy" alt=""></div></div></div>`;
+      gallery.innerHTML += `<div class="g-multi-wrap"><div class="g-2col-inner"><div class="g-col">${gi(`${p.folder}/${item.files[0]}`)}</div><div class="g-col">${gi(`${p.folder}/${item.files[1]}`)}</div></div></div>`;
     }
   });
 
@@ -1477,16 +1514,28 @@ let _lbScrollY = 0;
 function openLightbox(src) {
   _lbScrollY = window.scrollY;
   const lb = document.getElementById('lightbox');
-  document.getElementById('lightbox-img').src = src;
+  const img = document.getElementById('lightbox-img');
+  img.style.transition = '';
+  img.style.opacity = '';
+  img.src = src;
   lb.classList.add('active');
 }
 function closeLightbox() {
   _lbJustClosed = true;
   const lb = document.getElementById('lightbox');
-  lb.classList.remove('active');
-  document.getElementById('lightbox-img').src = '';
-  window.scrollTo({ top: _lbScrollY, behavior: 'instant' });
-  setTimeout(() => { _lbJustClosed = false; }, 100);
+  const img = document.getElementById('lightbox-img');
+  img.style.transition = 'opacity 0.4s ease';
+  img.style.opacity = '0';
+  setTimeout(() => {
+    lb.classList.remove('active');
+    window.scrollTo({ top: _lbScrollY, behavior: 'instant' });
+  }, 420);
+  setTimeout(() => {
+    img.src = '';
+    img.style.transition = '';
+    img.style.opacity = '';
+    _lbJustClosed = false;
+  }, 820);
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
@@ -1545,6 +1594,26 @@ document.getElementById('page-works').addEventListener('click', (e) => {
   if (document.getElementById('works-detail').contains(e.target)) return;
   if (expandedCardId) closeCardDetail();
 });
+
+// ─── CUSTOM CURSOR ───
+;(function() {
+  const cur = document.getElementById('custom-cursor');
+  const HOVER_SELECTORS = 'a, button, .feed-img, .works-card, .wd-full img, .wd-col img, .g-img, #lightbox, .about-overlay, #contact-overlay, .pnav-next, .pnav-back, [onclick]';
+
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  });
+
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest(HOVER_SELECTORS)) cur.classList.add('is-hover');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest(HOVER_SELECTORS)) cur.classList.remove('is-hover');
+  });
+
+  document.addEventListener('mouseleave', () => cur.classList.remove('is-hover'));
+})();
 
 </script>
 </body>
