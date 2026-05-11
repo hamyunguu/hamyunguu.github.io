@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hamyunguu — photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --pad: 48px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: var(--sans);
+  font-weight: 200;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--pad);
+  z-index: 100;
+}
+
+.logo {
+  font-size: 10px;
+  font-weight: 200;
+  letter-spacing: 0.04em;
+  color: #000;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+}
+
+.nav-r { display: flex; gap: 28px; align-items: center; }
+
+.nav-link {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+  transition: color 0.15s;
+}
+
+.nav-link:hover { color: #000; }
+
+/* ─── PAGES ─── */
+.page { display: none; padding-top: 48px; min-height: 100vh; }
+.page.visible { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.page.visible { animation: fadeIn 0.22s ease both; }
+
+/* ─── HOME FEED ─── */
+.feed-wrap {
+  padding: 16px 0 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.feed-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 560px) 1fr;
+  cursor: pointer;
+}
+
+.feed-label-l {
+  padding: 0 40px 0 var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.feed-label-r {
+  padding: 0 var(--pad) 0 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.feed-num {
+  font-size: 7.5px;
+  font-weight: 200;
+  letter-spacing: 0.1em;
+  color: #d4d4d4;
+  line-height: 1;
+}
+
+.feed-name {
+  font-size: 7.5px;
+  font-weight: 200;
+  letter-spacing: 0.06em;
+  color: #b8b8b8;
+  line-height: 1;
+}
+
+.feed-cat {
+  font-size: 7.5px;
+  font-weight: 200;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d4d4d4;
+  line-height: 1;
+}
+
+.feed-yr {
+  font-size: 7.5px;
+  font-weight: 200;
+  letter-spacing: 0.06em;
+  color: #dcdcdc;
+  line-height: 1;
+}
+
+.feed-img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.feed-row:hover .feed-num,
+.feed-row:hover .feed-name,
+.feed-row:hover .feed-cat,
+.feed-row:hover .feed-yr {
+  color: #777;
+  transition: color 0.15s;
+}
+
+/* ─── PROJECT DETAIL ─── */
+.proj-back {
+  padding: 24px var(--pad) 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.proj-back button {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+  transition: color 0.15s;
+}
+
+.proj-back button:hover { color: #000; }
+.proj-back span { font-size: 8px; color: #d8d8d8; font-weight: 200; }
+
+.proj-header {
+  padding: 28px var(--pad) 36px;
+  max-width: 1100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.proj-cat-label {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c8c8c8;
+  margin-bottom: 10px;
+}
+
+.proj-name-d {
+  font-size: 20px;
+  font-weight: 200;
+  letter-spacing: 0.02em;
+  color: #000;
+  line-height: 1.2;
+}
+
+.proj-credit-d {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  color: #c0c0c0;
+  text-align: right;
+}
+
+/* ─── GALLERY ─── */
+.gallery {
+  padding: 0 var(--pad) 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 1100px;
+}
+
+.g-full { display: flex; justify-content: center; }
+
+.g-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 86vh;
+}
+
+.g-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-items: start;
+}
+
+.g-col { overflow: hidden; }
+.g-col .g-img { width: 100%; max-height: 70vh; }
+
+.proj-nav-bar {
+  padding: 40px var(--pad) 60px;
+  max-width: 1100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pnav-back {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.pnav-back:hover { color: #000; }
+
+.pnav-next {
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.15s;
+  text-align: right;
+}
+
+.pnav-next:hover { color: #000; }
+
+/* ─── ABOUT ─── */
+.about-wrap {
+  padding: 52px var(--pad) 80px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+  max-width: 1000px;
+}
+
+.about-photo {
+  width: 160px;
+  aspect-ratio: 3/4;
+  background: #f2f2f2;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-bio {
+  font-size: 15px;
+  font-weight: 200;
+  color: #000;
+  line-height: 1.9;
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+
+.about-bio-sub {
+  font-size: 11px;
+  font-weight: 200;
+  color: #999;
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+
+.about-label {
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c8c8c8;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.about-contact {
+  font-size: 11px;
+  font-weight: 200;
+  color: #888;
+}
+
+.collab-list { list-style: none; margin-bottom: 36px; }
+
+.collab-item {
+  padding: 10px 0;
+  border-bottom: 0.5px solid #f0f0f0;
+  font-size: 11px;
+  font-weight: 200;
+  color: #666;
+}
+
+.collab-list li:first-child { border-top: 0.5px solid #f0f0f0; }
+
+.avail-list { list-style: none; }
+
+.avail-item {
+  font-size: 11px;
+  font-weight: 200;
+  color: #999;
+  line-height: 2.5;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 860px) {
+  :root { --pad: 20px; }
+
+  .feed-row {
+    grid-template-columns: 70px 1fr 70px;
+  }
+
+  .feed-label-l { padding-left: var(--pad); }
+  .feed-label-r { padding-right: var(--pad); }
+}
+
+@media (max-width: 600px) {
+  .feed-row {
+    grid-template-columns: 54px 1fr 54px;
+  }
+
+  .about-wrap { grid-template-columns: 1fr; gap: 40px; }
+
+  .proj-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .proj-credit-d { text-align: left; }
+
+  .g-2col { grid-template-columns: 1fr; gap: 4px; }
+  .g-col .g-img { max-height: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <button class="logo" onclick="showPage('home')">hamyunguu</button>
+  <div class="nav-r">
+    <button class="nav-link" id="nav-about" onclick="showPage('about')">About</button>
+    <button class="nav-link" onclick="window.location.href='mailto:hcy070722@gmail.com'">Contact</button>
+  </div>
+</nav>
+
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="page visible" id="page-home">
+  <div class="feed-wrap">
+
+    <div class="feed-row" onclick="showProject('kim-insig')">
+      <div class="feed-label-l">
+        <span class="feed-num">01 /</span>
+        <span class="feed-name">Kim Insig</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2026.02 Kim Insig_Objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2026</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('acc-objects')">
+      <div class="feed-label-l">
+        <span class="feed-num">02 /</span>
+        <span class="feed-name">ACC</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.10 ACC_Objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('twl')">
+      <div class="feed-label-l">
+        <span class="feed-num">03 /</span>
+        <span class="feed-name">TWL</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.09 TWL_Objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('old-barber-place')">
+      <div class="feed-label-l">
+        <span class="feed-num">04 /</span>
+        <span class="feed-name">Old Barber Place</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.09 OldBarberPlace_Spaces/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Spaces</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('ddp')">
+      <div class="feed-label-l">
+        <span class="feed-num">05 /</span>
+        <span class="feed-name">DDP</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.09 DDP_ Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('heomoody')">
+      <div class="feed-label-l">
+        <span class="feed-num">06 /</span>
+        <span class="feed-name">Heomoody</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.09 Heomoody_objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('mmca')">
+      <div class="feed-label-l">
+        <span class="feed-num">07 /</span>
+        <span class="feed-name">MMCA</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.08 MMCA_Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('kim-hanyoung')">
+      <div class="feed-label-l">
+        <span class="feed-num">08 /</span>
+        <span class="feed-name">Kim Hanyoung</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.07 Kim Hanyoung_Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('peter-ivy')">
+      <div class="feed-label-l">
+        <span class="feed-num">09 /</span>
+        <span class="feed-name">Peter Ivy</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.06 Peter Ivy_Objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('behind-the-doors')">
+      <div class="feed-label-l">
+        <span class="feed-num">10 /</span>
+        <span class="feed-name">Behind the Doors</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.06 Behind the Doors_Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('workshop')">
+      <div class="feed-label-l">
+        <span class="feed-num">11 /</span>
+        <span class="feed-name">Workshop</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.05 Workshop _Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('foh')">
+      <div class="feed-label-l">
+        <span class="feed-num">12 /</span>
+        <span class="feed-name">Foh</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2025.02 Foh_objects/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Objects</span>
+        <span class="feed-yr">2025</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('songeun')">
+      <div class="feed-label-l">
+        <span class="feed-num">13 /</span>
+        <span class="feed-name">Songeun</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2024.09 Songeun_Spaces/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Spaces</span>
+        <span class="feed-yr">2024</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('poul-kjaeholm')">
+      <div class="feed-label-l">
+        <span class="feed-num">14 /</span>
+        <span class="feed-name">Poul Kjaeholm</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2024.08 Poul Kjaeholm_Works/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Works</span>
+        <span class="feed-yr">2024</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('younhyun-library')">
+      <div class="feed-label-l">
+        <span class="feed-num">15 /</span>
+        <span class="feed-name">Younhyun Library</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2024.07 Younhyun Library_Space/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Spaces</span>
+        <span class="feed-yr">2024</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('leeum')">
+      <div class="feed-label-l">
+        <span class="feed-num">16 /</span>
+        <span class="feed-name">Leeum</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2024.01 Leeum_Space/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Spaces</span>
+        <span class="feed-yr">2024</span>
+      </div>
+    </div>
+
+    <div class="feed-row" onclick="showProject('kim-changyeul')">
+      <div class="feed-label-l">
+        <span class="feed-num">17 /</span>
+        <span class="feed-name">Kim Changyeul</span>
+      </div>
+      <div class="feed-img-wrap">
+        <img src="2023.10 Kim Changyeul_Space/Hero 1.jpg" alt="" loading="lazy">
+      </div>
+      <div class="feed-label-r">
+        <span class="feed-cat">Spaces</span>
+        <span class="feed-yr">2023</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════ PROJECT DETAIL ══════════════ -->
+<div class="page" id="page-project">
+
+  <div class="proj-back">
+    <button onclick="showPage('home')">← Works</button>
+    <span>/</span>
+    <span id="proj-breadcrumb" style="font-size:8px;font-weight:200;letter-spacing:0.06em;color:#c0c0c0;"></span>
+  </div>
+
+  <div class="proj-header">
+    <div>
+      <p class="proj-cat-label" id="proj-cat-d"></p>
+      <h1 class="proj-name-d" id="proj-name-d"></h1>
+    </div>
+    <p class="proj-credit-d" id="proj-credit-d"></p>
+  </div>
+
+  <div class="gallery" id="gallery-content"></div>
+
+  <div class="proj-nav-bar">
+    <button class="pnav-back" onclick="showPage('home')">← All works</button>
+    <div class="pnav-next" id="proj-next"></div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════ ABOUT ══════════════ -->
+<div class="page" id="page-about">
+  <div class="about-wrap">
+
+    <div>
+      <div class="about-photo">
+        <span style="font-size:8px;font-weight:200;letter-spacing:0.06em;color:#c8c8c8;">Portrait</span>
+      </div>
+      <p class="about-bio">
+        공간과 사물, 그리고 만들어진 것들의<br>물성과 빛의 관계를 기록합니다.
+      </p>
+      <p class="about-bio-sub">
+        Seoul-based photographer documenting spaces, objects, and the relationship between materiality and light. Working with galleries, craft studios, and design collaborators to create visual archives of making and placing.
+      </p>
+      <span class="about-label">Contact</span>
+      <p class="about-contact">hcy070722@gmail.com</p>
+    </div>
+
+    <div>
+      <span class="about-label">Collaborations</span>
+      <ul class="collab-list">
+        <li class="collab-item">Kim Insig</li>
+        <li class="collab-item">Kim Hanyoung</li>
+        <li class="collab-item">Kim Changyeul</li>
+        <li class="collab-item">Poul Kjaeholm</li>
+      </ul>
+      <span class="about-label">Available for</span>
+      <ul class="avail-list">
+        <li class="avail-item">Object documentation</li>
+        <li class="avail-item">Exhibition photography</li>
+        <li class="avail-item">Space &amp; interior</li>
+        <li class="avail-item">Editorial collaboration</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════ SCRIPT ══════════════ -->
+<script>
+
+const projects = {
+  'kim-insig': {
+    name: 'Kim Insig', cat: 'Objects', credit: 'Feb 2026',
+    folder: '2026.02 Kim Insig_Objects',
+    next: { id: 'acc-objects', name: 'ACC' },
+    layout: [
+      { type: 'full', file: 'DSC06228.jpg' },
+      { type: '2col', files: ['DSC06232.jpg', 'DSC06239.jpg'] },
+      { type: 'full', file: 'DSC06254.jpg' },
+      { type: '2col', files: ['DSC06256.jpg', 'DSC06260.jpg'] },
+      { type: 'full', file: 'DSC06274.jpg' },
+    ]
+  },
+  'acc-objects': {
+    name: 'ACC', cat: 'Objects', credit: 'Oct 2025',
+    folder: '2025.10 ACC_Objects',
+    next: { id: 'twl', name: 'TWL' },
+    layout: [
+      { type: 'full', file: 'DSC00103.jpg' },
+      { type: '2col', files: ['DSC00121.jpg', 'DSC00122.jpg'] },
+      { type: 'full', file: 'DSC00186.jpg' },
+      { type: '2col', files: ['DSC00218.jpg', 'DSC00228.jpg'] },
+      { type: 'full', file: 'DSC00239.jpg' },
+      { type: '2col', files: ['DSC00242.jpg', 'DSC00245.jpg'] },
+    ]
+  },
+  'twl': {
+    name: 'TWL', cat: 'Objects', credit: 'Sept 2025',
+    folder: '2025.09 TWL_Objects',
+    next: { id: 'old-barber-place', name: 'Old Barber Place' },
+    layout: [
+      { type: 'full', file: 'DSC02310.jpg' },
+      { type: '2col', files: ['DSC02315.jpg', 'DSC02317.jpg'] },
+      { type: 'full', file: 'DSC02318.jpg' },
+    ]
+  },
+  'old-barber-place': {
+    name: 'Old Barber Place', cat: 'Spaces', credit: 'Sept 2025',
+    folder: '2025.09 OldBarberPlace_Spaces',
+    next: { id: 'ddp', name: 'DDP' },
+    layout: [
+      { type: 'full', file: 'DSC02826.jpg' },
+      { type: '2col', files: ['DSC02880.jpg', 'DSC02887.jpg'] },
+      { type: 'full', file: 'DSC02893.jpg' },
+      { type: '2col', files: ['DSC02903.jpg', 'DSC02911.jpg'] },
+      { type: 'full', file: 'DSC02914.jpg' },
+      { type: '2col', files: ['DSC02942.jpg', 'DSC02958.jpg'] },
+    ]
+  },
+  'ddp': {
+    name: 'DDP', cat: 'Works', credit: 'Sept 2025',
+    folder: '2025.09 DDP_ Works',
+    next: { id: 'heomoody', name: 'Heomoody' },
+    layout: [
+      { type: 'full', file: 'DSC02359.jpg' },
+      { type: '2col', files: ['DSC02376.jpg', 'DSC02379.jpg'] },
+      { type: 'full', file: 'DSC02391.jpg' },
+      { type: 'full', file: 'DSC02428.jpg' },
+    ]
+  },
+  'heomoody': {
+    name: 'Heomoody', cat: 'Objects', credit: 'Sept 2025',
+    folder: '2025.09 Heomoody_objects',
+    next: { id: 'mmca', name: 'MMCA' },
+    layout: [
+      { type: 'full', file: 'DSC02268.jpg' },
+      { type: '2col', files: ['DSC02273.jpg', 'DSC02304.jpg'] },
+    ]
+  },
+  'mmca': {
+    name: 'MMCA', cat: 'Works', credit: 'Aug 2025',
+    folder: '2025.08 MMCA_Works',
+    next: { id: 'kim-hanyoung', name: 'Kim Hanyoung' },
+    layout: [
+      { type: 'full', file: 'Hero 1.jpg' },
+      { type: '2col', files: ['Hero 2.jpg', 'Hero 3.jpg'] },
+    ]
+  },
+  'kim-hanyoung': {
+    name: 'Kim Hanyoung', cat: 'Works', credit: 'Jul 2025',
+    folder: '2025.07 Kim Hanyoung_Works',
+    next: { id: 'peter-ivy', name: 'Peter Ivy' },
+    layout: [
+      { type: 'full', file: 'DSC09376.jpg' },
+      { type: '2col', files: ['DSC09418.jpg', 'DSC09467.jpg'] },
+      { type: 'full', file: 'DSC09476.jpg' },
+      { type: '2col', files: ['DSC09478.jpg', 'DSC09481.jpg'] },
+      { type: 'full', file: 'DSC09562.jpg' },
+      { type: 'full', file: 'DSC09585.jpg' },
+    ]
+  },
+  'peter-ivy': {
+    name: 'Peter Ivy', cat: 'Objects', credit: 'Jun 2025',
+    folder: '2025.06 Peter Ivy_Objects',
+    next: { id: 'behind-the-doors', name: 'Behind the Doors' },
+    layout: [
+      { type: 'full', file: 'Hero 1.jpg' },
+      { type: '2col', files: ['Hero 2.jpg', 'Hero 3.jpg'] },
+    ]
+  },
+  'behind-the-doors': {
+    name: 'Behind the Doors', cat: 'Works', credit: 'Jun 2025',
+    folder: '2025.06 Behind the Doors_Works',
+    next: { id: 'workshop', name: 'Workshop' },
+    layout: [
+      { type: 'full', file: 'DSC00135.jpg' },
+      { type: '2col', files: ['DSC00150.jpg', 'DSC00246.jpg'] },
+      { type: 'full', file: 'DSC00260.jpg' },
+      { type: '2col', files: ['DSC00270.jpg', 'DSC00285.jpg'] },
+      { type: 'full', file: 'DSC00421-Edit.jpg' },
+      { type: 'full', file: 'DSC01324.jpg' },
+    ]
+  },
+  'workshop': {
+    name: 'Workshop', cat: 'Works', credit: 'May 2025',
+    folder: '2025.05 Workshop _Works',
+    next: { id: 'foh', name: 'Foh' },
+    layout: [
+      { type: 'full', file: 'DSC07851.jpg' },
+      { type: '2col', files: ['DSC07854.jpg', 'DSC07882.jpg'] },
+      { type: 'full', file: 'DSC07900.jpg' },
+    ]
+  },
+  'foh': {
+    name: 'Foh', cat: 'Objects', credit: 'Feb 2025',
+    folder: '2025.02 Foh_objects',
+    next: { id: 'songeun', name: 'Songeun' },
+    layout: [
+      { type: 'full', file: 'DSC06296.jpg' },
+      { type: '2col', files: ['DSC06302.jpg', 'DSC06305.jpg'] },
+      { type: 'full', file: 'DSC06308.jpg' },
+      { type: '2col', files: ['DSC06322.jpg', 'DSC06325.jpg'] },
+      { type: '2col', files: ['DSC06326.jpg', 'DSC06327.jpg'] },
+    ]
+  },
+  'songeun': {
+    name: 'Songeun', cat: 'Spaces', credit: 'Sept 2024',
+    folder: '2024.09 Songeun_Spaces',
+    next: { id: 'poul-kjaeholm', name: 'Poul Kjaeholm' },
+    layout: [
+      { type: 'full', file: 'DSC01019.jpg' },
+      { type: '2col', files: ['DSC01022.jpg', 'DSC01058.jpg'] },
+      { type: 'full', file: 'DSC01088.jpg' },
+      { type: '2col', files: ['DSC01103.jpg', 'DSC01142.jpg'] },
+    ]
+  },
+  'poul-kjaeholm': {
+    name: 'Poul Kjaeholm', cat: 'Works', credit: 'Aug 2024',
+    folder: '2024.08 Poul Kjaeholm_Works',
+    next: { id: 'younhyun-library', name: 'Younhyun Library' },
+    layout: [
+      { type: 'full', file: 'DSC00878.jpg' },
+      { type: '2col', files: ['DSC00920.jpg', 'DSC00928.jpg'] },
+      { type: 'full', file: 'DSC00937.jpg' },
+      { type: '2col', files: ['DSC00947.jpg', 'DSC00950.jpg'] },
+      { type: 'full', file: 'DSC00953.jpg' },
+      { type: 'full', file: 'DSC00961.jpg' },
+    ]
+  },
+  'younhyun-library': {
+    name: 'Younhyun Library', cat: 'Spaces', credit: 'Jul 2024',
+    folder: '2024.07 Younhyun Library_Space',
+    next: { id: 'leeum', name: 'Leeum' },
+    layout: [
+      { type: 'full', file: 'DSC00793.jpg' },
+      { type: '2col', files: ['DSC00822.jpg', 'DSC00828.jpg'] },
+      { type: 'full', file: 'DSC00831.jpg' },
+      { type: '2col', files: ['DSC00841-Enhanced-NR.jpg', 'DSC00843-Enhanced-NR.jpg'] },
+      { type: 'full', file: 'DSC00844.jpg' },
+      { type: 'full', file: 'DSC00848.jpg' },
+    ]
+  },
+  'leeum': {
+    name: 'Leeum', cat: 'Spaces', credit: 'Jan 2024',
+    folder: '2024.01 Leeum_Space',
+    next: { id: 'kim-changyeul', name: 'Kim Changyeul' },
+    layout: [
+      { type: 'full', file: 'DSC05039.jpg' },
+      { type: '2col', files: ['DSC05046.jpg', 'DSC05050.jpg'] },
+      { type: 'full', file: 'DSC05077.jpg' },
+      { type: 'full', file: 'DSC05117.jpg' },
+      { type: '2col', files: ['DSC07671-Enhanced-NR-3.jpg', 'DSC07672.jpg'] },
+      { type: 'full', file: 'DSC07686-Edit.jpg' },
+    ]
+  },
+  'kim-changyeul': {
+    name: 'Kim Changyeul', cat: 'Spaces', credit: 'Oct 2023',
+    folder: '2023.10 Kim Changyeul_Space',
+    next: null,
+    layout: [
+      { type: 'full', file: 'DSC00363.jpg' },
+      { type: '2col', files: ['DSC00368.jpg', 'DSC00379.jpg'] },
+      { type: 'full', file: 'DSC00380.jpg' },
+      { type: 'full', file: 'DSC00386.jpg' },
+    ]
+  },
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('visible');
+  const navAbout = document.getElementById('nav-about');
+  navAbout.style.color = (id === 'about') ? '#000' : '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showProject(id) {
+  const p = projects[id];
+  if (!p) return;
+
+  document.getElementById('proj-breadcrumb').textContent = p.name;
+  document.getElementById('proj-cat-d').textContent = p.cat;
+  document.getElementById('proj-name-d').textContent = p.name;
+  document.getElementById('proj-credit-d').textContent = p.credit;
+
+  const gallery = document.getElementById('gallery-content');
+  gallery.innerHTML = '';
+
+  p.layout.forEach(item => {
+    if (item.type === 'full') {
+      gallery.innerHTML += `<div class="g-full"><img src="${p.folder}/${item.file}" class="g-img" loading="lazy" alt=""></div>`;
+    } else if (item.type === '2col') {
+      gallery.innerHTML += `<div class="g-2col"><div class="g-col"><img src="${p.folder}/${item.files[0]}" class="g-img" loading="lazy" alt=""></div><div class="g-col"><img src="${p.folder}/${item.files[1]}" class="g-img" loading="lazy" alt=""></div></div>`;
+    }
+  });
+
+  const nextEl = document.getElementById('proj-next');
+  if (p.next) {
+    nextEl.textContent = p.next.name + ' →';
+    nextEl.onclick = () => showProject(p.next.id);
+  } else {
+    nextEl.textContent = '';
+    nextEl.onclick = null;
+  }
+
+  showPage('project');
+}
+
+</script>
+</body>
+</html>
